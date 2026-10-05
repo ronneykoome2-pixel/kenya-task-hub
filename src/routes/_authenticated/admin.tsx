@@ -65,7 +65,7 @@ function Activations() {
   });
   async function act(id: string, approve: boolean) {
     const { error } = await supabase.rpc("admin_approve_activation", { _payment: id, _approve: approve });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success(approve ? "Account activated" : "Payment rejected");
     qc.invalidateQueries();
   }
@@ -100,7 +100,7 @@ function Withdrawals() {
   });
   async function act(id: string, paid: boolean) {
     const { error } = await supabase.rpc("admin_process_withdrawal", { _id: id, _paid: paid });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success(paid ? "Marked as paid" : "Rejected & refunded");
     qc.invalidateQueries();
   }
@@ -131,9 +131,9 @@ function VideosAdmin() {
   const [f, setF] = useState({ title: "", url: "", reward: "15", duration: "30" });
   const { data } = useQuery({ queryKey: ["admin-vid"], queryFn: async () => (await supabase.from("videos").select("*").order("created_at", { ascending: false })).data ?? [] });
   async function save() {
-    if (!f.title.trim() || !f.url.trim()) return toast.error("Add a title and YouTube link");
+    if (!f.title.trim() || !f.url.trim()) { toast.error("Add a title and YouTube link"); return; }
     const { error } = await supabase.rpc("admin_save_video", { _id: null as unknown as string, _title: f.title.trim(), _url: f.url.trim(), _reward: Number(f.reward), _duration: Number(f.duration), _active: true });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     setF({ title: "", url: "", reward: "15", duration: "30" });
     qc.invalidateQueries({ queryKey: ["admin-vid"] });
   }

@@ -63,7 +63,7 @@ function AuthPage() {
     try {
       if (mode === "signup") {
         const parsed = signupSchema.safeParse(form);
-        if (!parsed.success) return toast.error(parsed.error.issues[0].message);
+        if (!parsed.success) { toast.error(parsed.error.issues[0]?.message ?? "Invalid input"); return; }
         const { error } = await supabase.auth.signUp({
           email: parsed.data.email,
           password: parsed.data.password,
@@ -72,17 +72,17 @@ function AuthPage() {
             data: { full_name: parsed.data.full_name, phone: parsed.data.phone, ref: form.ref.trim() },
           },
         });
-        if (error) return toast.error(error.message);
+        if (error) { toast.error(error.message); return; }
         localStorage.removeItem("wc_ref");
         toast.success("Account created! Check your email to confirm, then log in.");
         navigate({ to: "/auth", search: { mode: "login" } });
       } else if (mode === "forgot") {
         const { error } = await supabase.auth.resetPasswordForEmail(form.email, { redirectTo: window.location.origin + "/reset-password" });
-        if (error) return toast.error(error.message);
+        if (error) { toast.error(error.message); return; }
         toast.success("Check your email for a reset link.");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email: form.email, password: form.password });
-        if (error) return toast.error(error.message);
+        if (error) { toast.error(error.message); return; }
         navigate({ to: "/dashboard" });
       }
     } finally {
@@ -93,7 +93,7 @@ function AuthPage() {
   async function google() {
     if (form.ref) localStorage.setItem("wc_ref", form.ref);
     const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/auth" });
-    if (result.error) return toast.error("Google sign-in failed");
+    if (result.error) { toast.error("Google sign-in failed"); return; }
     if (result.redirected) return;
     navigate({ to: "/dashboard" });
   }

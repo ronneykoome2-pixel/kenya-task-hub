@@ -66,7 +66,7 @@ function Activation({ phone: initial }: { phone: string }) {
   }
   async function manual() {
     const { error } = await supabase.rpc("submit_manual_payment", { _phone: phone, _code: code.trim() });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Submitted! The admin will confirm your payment shortly.");
     setCode("");
     qc.invalidateQueries({ queryKey: ["my-payments"] });
@@ -112,7 +112,7 @@ function WalletCard({ balance, activated, phone: initial }: { balance: number; a
   const qc = useQueryClient();
   async function withdraw() {
     const { error } = await supabase.rpc("request_withdrawal", { _amount: Number(amount), _phone: phone.trim() });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Withdrawal requested. You'll receive it on M-Pesa once processed.");
     qc.invalidateQueries();
   }

@@ -86,7 +86,7 @@ function Player({ video, onClose }: { video: Video; onClose: () => void }) {
     setBusy(true);
     const { data, error } = await supabase.rpc("claim_video_reward", { _video: video.id });
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success(`You earned ${ksh(data ?? 0)}!`);
     qc.invalidateQueries();
     onClose();
