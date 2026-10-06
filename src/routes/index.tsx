@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { PlayCircle, ClipboardList, Users, Wallet, ArrowRight, ShieldCheck } from "lucide-react";
+import { PlayCircle, ClipboardList, Users, Wallet, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
+import hero from "@/assets/workcash-hero.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -34,42 +35,21 @@ function Index() {
         </div>
       </header>
 
-      <section className="mx-auto grid max-w-6xl gap-10 px-5 pb-16 pt-8 md:grid-cols-[1.2fr_1fr] md:pt-16">
-        <div>
-          <span className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
-            <ShieldCheck className="h-3.5 w-3.5" /> Made for Kenya · Withdraw to M-Pesa
-          </span>
-          <h1 className="mt-5 text-5xl font-bold leading-[1.02] md:text-7xl">
-            Your phone.<br />Your time.<br /><span className="text-primary">Your cash.</span>
-          </h1>
-          <p className="mt-6 max-w-lg text-lg text-muted-foreground">
-            Complete simple online tasks — videos, surveys and invites — and grow your wallet in Kenya shillings.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Button asChild size="lg" className="h-12 px-6 text-base">
-              <Link to="/auth" search={{ mode: "signup" }}>Create free account <ArrowRight className="ml-1 h-4 w-4" /></Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="h-12 px-6 text-base">
-              <Link to="/auth">I have an account</Link>
-            </Button>
-          </div>
-        </div>
-
-        <div className="relative rounded-3xl bg-ink p-7 text-ink-foreground shadow-2xl">
-          <p className="text-sm opacity-70">Wallet balance</p>
-          <p className="mt-1 font-display text-5xl font-bold">KSh 1,240</p>
-          <div className="mt-6 space-y-3">
-            {[["Ad video watched", "+15"], ["Survey completed", "+65"], ["Friend activated", "+20"], ["Activation deposit", "+100"]].map(([a, b]) => (
-              <div key={a} className="flex items-center justify-between rounded-xl bg-sidebar-accent px-4 py-3 text-sm">
-                <span>{a}</span><span className="font-semibold text-gold">KSh {b}</span>
-              </div>
-            ))}
-          </div>
-          <div className="mt-6 rounded-xl bg-gold px-4 py-3 text-center text-sm font-semibold text-gold-foreground">
-            Withdraw from KSh 600 to M-Pesa
-          </div>
+      <section className="mx-auto max-w-6xl px-5 pb-12 pt-2">
+        <h1 className="sr-only">WorkCash Kenya — Your skills. Real income.</h1>
+        <Link to="/auth" search={{ mode: "signup" }} className="block overflow-hidden rounded-3xl shadow-2xl">
+          <img src={hero.url} alt="WorkCash Kenya — find legit online jobs and earn. Start earning today." className="h-auto w-full" />
+        </Link>
+        <div className="mt-6 flex flex-wrap justify-center gap-3">
+          <Button asChild size="lg" className="h-12 px-6 text-base">
+            <Link to="/auth" search={{ mode: "signup" }}>Start earning today <ArrowRight className="ml-1 h-4 w-4" /></Link>
+          </Button>
+          <Button asChild size="lg" variant="outline" className="h-12 px-6 text-base">
+            <Link to="/auth">I have an account</Link>
+          </Button>
         </div>
       </section>
+
 
       <section className="mx-auto max-w-6xl px-5 pb-16">
         <h2 className="text-3xl font-bold">Three ways to earn</h2>

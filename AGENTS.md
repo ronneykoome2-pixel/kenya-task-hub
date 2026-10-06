@@ -11,5 +11,5 @@
 
 ## Architecture rules
 - Wallet balances change only through SECURITY DEFINER SQL functions (credit_wallet, admin_*, claim_video_reward, request_withdrawal); clients never get UPDATE on profiles — prevents self-crediting.
-- M-Pesa STK push runs in src/lib/mpesa.functions.ts; Safaricom callback lands at /api/public/mpesa-callback and only updates payments we created (matched by CheckoutRequestID); activation itself always needs admin approval.
+- Activation is manual: user pays the till and submits the M-Pesa code via submit_manual_payment; admin approves. The STK callback route is kept unused for future automation.
 - Survey rewards come from the CPX Research postback at /api/public/cpx-postback, verified by md5 hash and deduplicated by trans_id.
