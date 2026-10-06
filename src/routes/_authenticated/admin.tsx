@@ -77,7 +77,7 @@ function Activations() {
         <div key={r.id} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-card p-4">
           <div>
             <p className="font-semibold">{r.profiles?.full_name || "—"} <span className="text-sm font-normal text-muted-foreground">{r.profiles?.email}</span></p>
-            <p className="text-sm text-muted-foreground">{r.phone} · {r.method === "stk" ? "M-Pesa prompt" : "Manual code"} · Code: <b>{r.mpesa_receipt ?? "—"}</b> · {new Date(r.created_at).toLocaleString("en-KE")}</p>
+            <p className="text-sm text-muted-foreground">{r.phone} · {r.method === "stk" ? "M-Pesa prompt" : "Manual code"} · Till code: <b>{r.mpesa_receipt ?? "—"}</b> · {new Date(r.created_at).toLocaleString("en-KE")}</p>
           </div>
           <div className="flex items-center gap-2">
             <Badge variant={statusColor[r.status]}>{r.status}</Badge>
@@ -110,7 +110,7 @@ function Withdrawals() {
       {data?.map((w) => (
         <div key={w.id} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-card p-4">
           <div>
-            <p className="font-semibold">{ksh(w.amount)} → {w.phone}</p>
+            <p className="font-semibold">{ksh(w.amount)} → {w.phone} <Badge variant="outline" className="ml-1 capitalize">{w.wallet}</Badge></p>
             <p className="text-sm text-muted-foreground">{w.profiles?.full_name} · {w.profiles?.email} · {new Date(w.created_at).toLocaleString("en-KE")}</p>
           </div>
           <div className="flex items-center gap-2">
@@ -176,11 +176,11 @@ function Users() {
       <Input placeholder="Search name, email, phone" value={q} onChange={(e) => setQ(e.target.value)} />
       <div className="overflow-x-auto rounded-2xl border bg-card">
         <table className="w-full text-sm">
-          <thead className="bg-muted text-left"><tr><th className="p-3">Name</th><th className="p-3">Email</th><th className="p-3">Phone</th><th className="p-3">Status</th><th className="p-3">Balance</th><th className="p-3">Joined</th></tr></thead>
+          <thead className="bg-muted text-left"><tr><th className="p-3">Name</th><th className="p-3">Email</th><th className="p-3">Phone</th><th className="p-3">Status</th><th className="p-3">Earnings</th><th className="p-3">Referral</th><th className="p-3">Joined</th></tr></thead>
           <tbody>{list?.map((u) => (
             <tr key={u.id} className="border-t"><td className="p-3">{u.full_name}</td><td className="p-3">{u.email}</td><td className="p-3">{u.phone}</td>
               <td className="p-3">{u.is_activated ? <Badge>Active</Badge> : <Badge variant="outline">Not active</Badge>}</td>
-              <td className="p-3">{ksh(u.balance)}</td><td className="p-3">{new Date(u.created_at).toLocaleDateString("en-KE")}</td></tr>
+              <td className="p-3">{ksh(u.balance)}</td><td className="p-3">{ksh(u.referral_balance)}</td><td className="p-3">{new Date(u.created_at).toLocaleDateString("en-KE")}</td></tr>
           ))}</tbody>
         </table>
       </div>

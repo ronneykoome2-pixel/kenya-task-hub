@@ -20,7 +20,7 @@ export const Route = createFileRoute("/")({
 const ways = [
   { icon: PlayCircle, title: "Watch ad videos", amount: "KSh 10 – 20", text: "Watch short videos to the end and get paid for each one." },
   { icon: ClipboardList, title: "Take surveys", amount: "Paid per survey", text: "Share your opinion in live surveys from trusted research partners." },
-  { icon: Users, title: "Invite friends", amount: "KSh 50", text: "Get paid for every friend who joins and activates their account." },
+  { icon: Users, title: "Invite friends", amount: "KSh 20", text: "Get paid for every friend who joins and activates their account." },
 ];
 
 function Index() {
@@ -59,14 +59,14 @@ function Index() {
           <p className="text-sm opacity-70">Wallet balance</p>
           <p className="mt-1 font-display text-5xl font-bold">KSh 1,240</p>
           <div className="mt-6 space-y-3">
-            {[["Ad video watched", "+15"], ["Survey completed", "+65"], ["Friend activated", "+50"], ["Activation deposit", "+100"]].map(([a, b]) => (
+            {[["Ad video watched", "+15"], ["Survey completed", "+65"], ["Friend activated", "+20"], ["Activation deposit", "+100"]].map(([a, b]) => (
               <div key={a} className="flex items-center justify-between rounded-xl bg-sidebar-accent px-4 py-3 text-sm">
                 <span>{a}</span><span className="font-semibold text-gold">KSh {b}</span>
               </div>
             ))}
           </div>
           <div className="mt-6 rounded-xl bg-gold px-4 py-3 text-center text-sm font-semibold text-gold-foreground">
-            Withdraw from KSh 800 to M-Pesa
+            Withdraw from KSh 600 to M-Pesa
           </div>
         </div>
       </section>
@@ -87,7 +87,7 @@ function Index() {
 
       <section className="mx-auto max-w-6xl px-5 pb-20">
         <div className="grid gap-6 rounded-3xl bg-primary p-8 text-primary-foreground md:grid-cols-4">
-          {[["1", "Sign up", "Create your free account"], ["2", "Activate", "Pay KSh 100 via M-Pesa — it goes into your wallet"], ["3", "Earn", "Unlock videos, surveys and invites"], ["4", "Withdraw", "Cash out to M-Pesa from KSh 800"]].map(([n, t, d]) => (
+          {[["1", "Sign up", "Create your free account"], ["2", "Activate", "Pay KSh 100 to Till 6412161 — it goes into your wallet"], ["3", "Earn", "Unlock videos, surveys and invites"], ["4", "Withdraw", "Cash out earnings from KSh 600, referrals from KSh 60"]].map(([n, t, d]) => (
             <div key={n}>
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gold font-bold text-gold-foreground">{n}</div>
               <h3 className="mt-3 text-lg font-semibold">{t}</h3>
