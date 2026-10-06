@@ -71,6 +71,7 @@ export type Database = {
           id: string
           is_activated: boolean
           phone: string
+          referral_balance: number
           referral_code: string
           referred_by: string | null
         }
@@ -83,6 +84,7 @@ export type Database = {
           id: string
           is_activated?: boolean
           phone?: string
+          referral_balance?: number
           referral_code: string
           referred_by?: string | null
         }
@@ -95,6 +97,7 @@ export type Database = {
           id?: string
           is_activated?: boolean
           phone?: string
+          referral_balance?: number
           referral_code?: string
           referred_by?: string | null
         }
@@ -271,6 +274,7 @@ export type Database = {
           processed_at: string | null
           status: string
           user_id: string
+          wallet: string
         }
         Insert: {
           amount: number
@@ -280,6 +284,7 @@ export type Database = {
           processed_at?: string | null
           status?: string
           user_id: string
+          wallet?: string
         }
         Update: {
           amount?: number
@@ -289,6 +294,7 @@ export type Database = {
           processed_at?: string | null
           status?: string
           user_id?: string
+          wallet?: string
         }
         Relationships: [
           {
@@ -339,7 +345,7 @@ export type Database = {
       }
       referral_count: { Args: { _user: string }; Returns: number }
       request_withdrawal: {
-        Args: { _amount: number; _phone: string }
+        Args: { _amount: number; _phone: string; _wallet: string }
         Returns: undefined
       }
       submit_manual_payment: {
