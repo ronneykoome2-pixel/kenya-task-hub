@@ -8,6 +8,13 @@
       "when": 1791203875072,
       "tag": "0000_migration",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791283371359,
+      "tag": "0001_two_wallets_first_admin",
+      "breakpoints": true
     }
   ]
 }
