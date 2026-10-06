@@ -109,8 +109,8 @@ function AuthPage() {
           <ul className="mt-8 space-y-3 text-lg opacity-90">
             <li>▸ KSh 10–20 per ad video</li>
             <li>▸ Paid live surveys</li>
-            <li>▸ KSh 50 for every friend who activates</li>
-            <li>▸ Withdraw from KSh 800</li>
+            <li>▸ KSh 20 for every friend who activates</li>
+            <li>▸ Withdraw earnings from KSh 600</li>
           </ul>
         </div>
         <p className="text-sm opacity-60">Your KSh 100 activation fee goes straight into your wallet.</p>
