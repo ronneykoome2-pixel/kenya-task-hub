@@ -32,7 +32,8 @@ function Videos() {
         supabase.from("videos").select("*").eq("active", true).order("created_at", { ascending: false }),
         supabase.from("video_views").select("video_id"),
       ]);
-      return { videos: (v ?? []) as Video[], watched: new Set((w ?? []).map((x) => x.video_id)) };
+      const watched = new Set((w ?? []).map((x) => x.video_id));
+      return { videos: ((v ?? []) as Video[]).filter((x) => !watched.has(x.id)), watched };
     },
   });
 

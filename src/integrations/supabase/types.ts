@@ -61,6 +61,41 @@ export type Database = {
           },
         ]
       }
+      poll_completions: {
+        Row: {
+          answers: Json
+          created_at: string
+          id: string
+          poll_date: string
+          reward: number
+          user_id: string
+        }
+        Insert: {
+          answers?: Json
+          created_at?: string
+          id?: string
+          poll_date?: string
+          reward: number
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          created_at?: string
+          id?: string
+          poll_date?: string
+          reward?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "poll_completions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           activated_at: string | null
@@ -331,6 +366,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      claim_daily_poll: { Args: { _answers: Json }; Returns: number }
       claim_video_reward: { Args: { _video: string }; Returns: number }
       credit_wallet: {
         Args: { _amount: number; _desc: string; _kind: string; _user: string }
