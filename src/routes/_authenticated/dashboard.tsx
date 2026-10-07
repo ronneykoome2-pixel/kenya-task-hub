@@ -153,10 +153,18 @@ function WalletCard(props: { wallet: "earnings" | "referral"; title: string; sub
 
 function ReferralCard({ code, activated, count }: { code: string; activated: boolean; count: number }) {
   const link = typeof window !== "undefined" ? `${window.location.origin}/auth?ref=${code}` : "";
+  if (!activated) {
+    return (
+      <div className="rounded-3xl border bg-card p-6">
+        <div className="flex items-center gap-3"><Lock className="h-6 w-6 text-gold" /><h2 className="text-xl font-bold">Invite & earn KSh 20 per person</h2></div>
+        <p className="mt-1 text-sm text-muted-foreground">Your invite code unlocks once your KSh 100 activation is approved.</p>
+      </div>
+    );
+  }
   return (
     <div className="rounded-3xl border bg-card p-6">
       <div className="flex items-center gap-3"><Users className="h-6 w-6 text-primary" /><h2 className="text-xl font-bold">Invite & earn KSh 20 per person</h2></div>
-      <p className="mt-1 text-sm text-muted-foreground">You get KSh 20 in your referral wallet when someone joins with your link and activates. {!activated && "(Activate first to qualify.)"}</p>
+      <p className="mt-1 text-sm text-muted-foreground">You get KSh 20 in your referral wallet when someone joins with your link and activates.</p>
       <div className="mt-4 flex flex-wrap items-end gap-6">
         <div><p className="text-xs uppercase text-muted-foreground">Your invite code</p><p className="font-display text-3xl font-bold tracking-widest">{code}</p></div>
         <p className="text-sm"><b>{count}</b> activated friends</p>
