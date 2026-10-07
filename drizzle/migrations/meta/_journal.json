@@ -15,6 +15,13 @@
       "when": 1791283371359,
       "tag": "0001_two_wallets_first_admin",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791354636546,
+      "tag": "0002_daily_polls_referral_activated",
+      "breakpoints": true
     }
   ]
 }
