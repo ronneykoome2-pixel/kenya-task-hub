@@ -28,7 +28,7 @@ const BANK: { q: string; o: string[] }[] = [
 function todaysQuestions() {
   const d = new Date(new Date().toLocaleString("en-US", { timeZone: "Africa/Nairobi" }));
   const seed = d.getFullYear() * 400 + d.getMonth() * 31 + d.getDate();
-  return Array.from({ length: 8 }, (_, i) => BANK[(seed * 3 + i * 5) % BANK.length]).filter((v, i, a) => a.indexOf(v) === i).concat(BANK).filter((v, i, a) => a.indexOf(v) === i).slice(0, 8);
+  return Array.from({ length: 8 }, (_, i) => BANK[(seed * 3 + i * 5) % BANK.length]!).filter((v, i, a) => a.indexOf(v) === i).concat(BANK).filter((v, i, a) => a.indexOf(v) === i).slice(0, 8);
 }
 
 export function DailyPoll() {
