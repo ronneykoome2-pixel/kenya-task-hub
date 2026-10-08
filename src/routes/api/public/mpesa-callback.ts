@@ -28,6 +28,8 @@ export const Route = createFileRoute("/api/public/mpesa-callback")({
             mpesa_receipt: receipt.slice(0, 20),
             note: amount >= 100 ? null : `Paid ${amount}`,
           }).eq("id", pay.id);
+          // Safaricom confirmed the payment: activate right away.
+          if (amount >= 100) await supabaseAdmin.rpc("auto_activate_payment", { _payment: pay.id });
         } else {
           await supabaseAdmin.from("activation_payments").update({ status: "failed", note: String(cb.ResultDesc ?? "").slice(0, 200) }).eq("id", pay.id);
         }

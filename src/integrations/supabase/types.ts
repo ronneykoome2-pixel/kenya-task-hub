@@ -366,6 +366,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      auto_activate_payment: { Args: { _payment: string }; Returns: undefined }
       claim_daily_poll: { Args: { _answers: Json }; Returns: number }
       claim_video_reward: { Args: { _video: string }; Returns: number }
       credit_wallet: {
