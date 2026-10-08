@@ -8,7 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { useProfile, ksh } from "@/lib/account";
+import { useProfile, ksh, errMsg } from "@/lib/account";
+import { useServerFn } from "@tanstack/react-start";
+import { startActivationPush } from "@/lib/mpesa.functions";
 
 export const TILL_NUMBER = "6412161";
 
@@ -78,6 +80,21 @@ function Activation({ phone: initial }: { phone: string }) {
     refetchInterval: 10000,
   });
   const latest = payments?.[0];
+  const [pushing, setPushing] = useState(false);
+  const stk = useServerFn(startActivationPush);
+  async function push() {
+    setPushing(true);
+    try {
+      await stk({ data: { phone: phone.trim() } });
+      toast.success("Check your phone and enter your M-Pesa PIN.");
+      const t = setInterval(() => qc.invalidateQueries(), 4000);
+      setTimeout(() => clearInterval(t), 90000);
+    } catch (e) {
+      toast.error(errMsg(e));
+    } finally {
+      setPushing(false);
+    }
+  }
 
   async function submit() {
     const { error } = await supabase.rpc("submit_manual_payment", { _phone: phone, _code: code.trim() });
@@ -101,7 +118,15 @@ function Activation({ phone: initial }: { phone: string }) {
           <p className="text-sm text-muted-foreground">The KSh 100 goes into your wallet. Activation unlocks videos, surveys and invite bonuses.</p>
         </div>
       </div>
-      <ol className="mt-5 space-y-1.5 rounded-2xl bg-muted p-4 text-sm">
+      <div className="mt-5 grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
+        <div><Label>M-Pesa phone number</Label><Input className="mt-1.5 h-11" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="0712345678" /></div>
+        <Button className="h-11 bg-gold text-gold-foreground hover:bg-gold/90" disabled={pushing} onClick={push}>
+          {pushing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Activate now — pay KSh 100
+        </Button>
+      </div>
+      <p className="mt-2 text-xs text-muted-foreground">You'll get an M-Pesa prompt on your phone. Enter your PIN and your account activates automatically.</p>
+      <p className="mt-5 text-sm font-semibold">Or pay manually:</p>
+      <ol className="mt-2 space-y-1.5 rounded-2xl bg-muted p-4 text-sm">
         <li>1. Open M-Pesa → <b>Lipa na M-Pesa</b> → <b>Buy Goods and Services</b></li>
         <li>2. Till number: <b className="font-display text-lg tracking-wider text-primary">{TILL_NUMBER}</b></li>
         <li>3. Amount: <b>KSh 100</b>, enter your PIN</li>
