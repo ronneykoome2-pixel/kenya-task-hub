@@ -11,5 +11,5 @@
 
 ## Architecture rules
 - Wallet balances change only through SECURITY DEFINER SQL functions (credit_wallet, admin_*, claim_video_reward, request_withdrawal); clients never get UPDATE on profiles — prevents self-crediting.
-- Activation is manual: user pays the till and submits the M-Pesa code via submit_manual_payment; admin approves. The STK callback route is kept unused for future automation.
+- Activation: STK push (mpesa.functions.ts) auto-activates via the /api/public/mpesa-callback route calling auto_activate_payment (service_role only); manual till code + admin approval remains as fallback.
 - Survey rewards come from the CPX Research postback at /api/public/cpx-postback, verified by md5 hash and deduplicated by trans_id.

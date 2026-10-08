@@ -22,6 +22,13 @@
       "when": 1791354636546,
       "tag": "0002_daily_polls_referral_activated",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791422528652,
+      "tag": "0003_auto_activate_stk",
+      "breakpoints": true
     }
   ]
 }
