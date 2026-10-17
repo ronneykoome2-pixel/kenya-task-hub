@@ -15,6 +15,8 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedPaymentFailedRouteImport } from './routes/_authenticated/payment-failed'
+import { Route as AuthenticatedPaymentSuccessRouteImport } from './routes/_authenticated/payment-success'
 import { Route as AuthenticatedSurveysRouteImport } from './routes/_authenticated/surveys'
 import { Route as AuthenticatedVideosRouteImport } from './routes/_authenticated/videos'
 import { Route as ApiPublicCpxPostbackRouteImport } from './routes/api/public/cpx-postback'
@@ -49,6 +51,18 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPaymentFailedRoute =
+  AuthenticatedPaymentFailedRouteImport.update({
+    id: '/payment-failed',
+    path: '/payment-failed',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedPaymentSuccessRoute =
+  AuthenticatedPaymentSuccessRouteImport.update({
+    id: '/payment-success',
+    path: '/payment-success',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSurveysRoute = AuthenticatedSurveysRouteImport.update({
   id: '/surveys',
   path: '/surveys',
@@ -76,6 +90,8 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/payment-failed': typeof AuthenticatedPaymentFailedRoute
+  '/payment-success': typeof AuthenticatedPaymentSuccessRoute
   '/surveys': typeof AuthenticatedSurveysRoute
   '/videos': typeof AuthenticatedVideosRoute
   '/api/public/cpx-postback': typeof ApiPublicCpxPostbackRoute
@@ -87,6 +103,8 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/payment-failed': typeof AuthenticatedPaymentFailedRoute
+  '/payment-success': typeof AuthenticatedPaymentSuccessRoute
   '/surveys': typeof AuthenticatedSurveysRoute
   '/videos': typeof AuthenticatedVideosRoute
   '/api/public/cpx-postback': typeof ApiPublicCpxPostbackRoute
@@ -100,6 +118,8 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/payment-failed': typeof AuthenticatedPaymentFailedRoute
+  '/_authenticated/payment-success': typeof AuthenticatedPaymentSuccessRoute
   '/_authenticated/surveys': typeof AuthenticatedSurveysRoute
   '/_authenticated/videos': typeof AuthenticatedVideosRoute
   '/api/public/cpx-postback': typeof ApiPublicCpxPostbackRoute
@@ -113,6 +133,8 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/admin'
     | '/dashboard'
+    | '/payment-failed'
+    | '/payment-success'
     | '/surveys'
     | '/videos'
     | '/api/public/cpx-postback'
@@ -124,6 +146,8 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/admin'
     | '/dashboard'
+    | '/payment-failed'
+    | '/payment-success'
     | '/surveys'
     | '/videos'
     | '/api/public/cpx-postback'
@@ -136,6 +160,8 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
+    | '/_authenticated/payment-failed'
+    | '/_authenticated/payment-success'
     | '/_authenticated/surveys'
     | '/_authenticated/videos'
     | '/api/public/cpx-postback'
@@ -195,6 +221,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/payment-failed': {
+      id: '/_authenticated/payment-failed'
+      path: '/payment-failed'
+      fullPath: '/payment-failed'
+      preLoaderRoute: typeof AuthenticatedPaymentFailedRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/payment-success': {
+      id: '/_authenticated/payment-success'
+      path: '/payment-success'
+      fullPath: '/payment-success'
+      preLoaderRoute: typeof AuthenticatedPaymentSuccessRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/surveys': {
       id: '/_authenticated/surveys'
       path: '/surveys'
@@ -229,6 +269,8 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedPaymentFailedRoute: typeof AuthenticatedPaymentFailedRoute
+  AuthenticatedPaymentSuccessRoute: typeof AuthenticatedPaymentSuccessRoute
   AuthenticatedSurveysRoute: typeof AuthenticatedSurveysRoute
   AuthenticatedVideosRoute: typeof AuthenticatedVideosRoute
 }
@@ -236,6 +278,8 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedPaymentFailedRoute: AuthenticatedPaymentFailedRoute,
+  AuthenticatedPaymentSuccessRoute: AuthenticatedPaymentSuccessRoute,
   AuthenticatedSurveysRoute: AuthenticatedSurveysRoute,
   AuthenticatedVideosRoute: AuthenticatedVideosRoute,
 }
