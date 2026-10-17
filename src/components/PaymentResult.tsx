@@ -3,7 +3,7 @@ import { ArrowRight, RotateCcw, ShieldCheck, CircleX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import successImage from "@/assets/payment-success.jpg";
 
-export function PaymentResult({ success, name }: { success: boolean; name?: string }) {
+export function PaymentResult({ success, name }: { success: boolean; name?: string | undefined }) {
   return (
     <section className="payment-result relative -mx-5 -my-8 overflow-hidden bg-card px-5 py-12 text-center sm:py-16">
       <div className={`absolute inset-x-0 top-0 h-2 ${success ? "bg-primary" : "bg-destructive"}`} />

@@ -114,7 +114,7 @@ function Dashboard() {
   );
 }
 
-function Activation({ phone: initial, latest, waiting, onStarted, onFailed }: { phone: string; latest?: { status: string }; waiting: boolean; onStarted: () => void; onFailed: () => void }) {
+function Activation({ phone: initial, latest, waiting, onStarted, onFailed }: { phone: string; latest: { status: string } | undefined; waiting: boolean; onStarted: () => void; onFailed: () => void }) {
   const [phone, setPhone] = useState(initial);
   const [code, setCode] = useState("");
   const qc = useQueryClient();
