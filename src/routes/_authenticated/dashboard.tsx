@@ -1,6 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Copy, Lock, Users, PlayCircle, ClipboardList, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,6 +11,7 @@ import { Progress } from "@/components/ui/progress";
 import { useProfile, ksh, errMsg } from "@/lib/account";
 import { useServerFn } from "@tanstack/react-start";
 import { startActivationPush } from "@/lib/mpesa.functions";
+import { paymentOutcome, type PaymentAttempt } from "@/lib/payment-outcome";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({ meta: [{ title: "My wallet — Work Cash" }, { name: "description", content: "Your Work Cash wallets and earnings." }, { property: "og:title", content: "My wallet — Work Cash" }, { property: "og:description", content: "Manage your Work Cash activation, wallets and earnings." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
@@ -19,6 +20,48 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 
 function Dashboard() {
   const { data: p, isLoading } = useProfile();
+  const navigate = useNavigate();
+  const qc = useQueryClient();
+  const [attempt, setAttempt] = useState<PaymentAttempt | null>(null);
+  const { data: payments } = useQuery({
+    queryKey: ["my-payments"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("activation_payments").select("*").order("created_at", { ascending: false }).limit(5);
+      if (error) throw error;
+      return data ?? [];
+    },
+    refetchInterval: attempt ? 4000 : 10000,
+  });
+  const latest = payments?.[0];
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(sessionStorage.getItem("workcash-payment-attempt") ?? "null");
+      if (saved && typeof saved.startedAt === "number" && Date.now() - saved.startedAt < 86400000 &&
+        (saved.previousPaymentId === null || typeof saved.previousPaymentId === "string")) setAttempt(saved);
+    } catch { /* Ignore unavailable storage or stale data. */ }
+  }, []);
+  useEffect(() => {
+    if (!attempt) return;
+    const timer = setInterval(() => void qc.invalidateQueries({ queryKey: ["profile"] }), 4000);
+    return () => clearInterval(timer);
+  }, [attempt, qc]);
+  useEffect(() => {
+    const outcome = paymentOutcome(!!p?.is_activated, attempt, latest);
+    if (!outcome) return;
+    try { sessionStorage.removeItem("workcash-payment-attempt"); } catch { /* Storage is optional. */ }
+    setAttempt(null);
+    void navigate({ to: outcome === "success" ? "/payment-success" : "/payment-failed", replace: true });
+  }, [p?.is_activated, attempt, latest, navigate]);
+  function trackPayment() {
+    const next = { previousPaymentId: latest?.id ?? null, startedAt: Date.now() };
+    setAttempt(next);
+    try { sessionStorage.setItem("workcash-payment-attempt", JSON.stringify(next)); } catch { /* Storage is optional. */ }
+  }
+  function paymentStartFailed() {
+    setAttempt(null);
+    try { sessionStorage.removeItem("workcash-payment-attempt"); } catch { /* Storage is optional. */ }
+    void navigate({ to: "/payment-failed" });
+  }
   const { data: refs } = useQuery({
     queryKey: ["refcount", p?.id],
     enabled: !!p,
@@ -34,7 +77,7 @@ function Dashboard() {
         <h1 className="text-3xl font-bold">Hi {p.full_name?.split(" ")[0] || "there"} 👋</h1>
         <p className="text-muted-foreground">{p.is_activated ? "Your account is active — start earning." : "Activate your account to unlock tasks."}</p>
       </div>
-      {!p.is_activated && <Activation phone={p.phone} />}
+      {!p.is_activated && <Activation phone={p.phone} latest={latest} waiting={!!attempt && latest?.status === "pending"} onStarted={trackPayment} onFailed={paymentStartFailed} />}
       <div className="grid gap-6 lg:grid-cols-2">
         <WalletCard
           wallet="earnings"
@@ -71,27 +114,26 @@ function Dashboard() {
   );
 }
 
-function Activation({ phone: initial }: { phone: string }) {
+function Activation({ phone: initial, latest, waiting, onStarted, onFailed }: { phone: string; latest?: { status: string }; waiting: boolean; onStarted: () => void; onFailed: () => void }) {
   const [phone, setPhone] = useState(initial);
   const [code, setCode] = useState("");
   const qc = useQueryClient();
-  const { data: payments } = useQuery({
-    queryKey: ["my-payments"],
-    queryFn: async () => (await supabase.from("activation_payments").select("*").order("created_at", { ascending: false }).limit(5)).data ?? [],
-    refetchInterval: 10000,
-  });
-  const latest = payments?.[0];
   const [pushing, setPushing] = useState(false);
   const stk = useServerFn(startActivationPush);
   async function push() {
+    if (!/^(?:\+?254|0)[17]\d{8}$/.test(phone.trim())) {
+      toast.error("Enter a valid M-Pesa phone number, such as 0712345678.");
+      return;
+    }
+    onStarted();
     setPushing(true);
     try {
       await stk({ data: { phone: phone.trim() } });
       toast.success("Check your phone and enter your M-Pesa PIN.");
-      const t = setInterval(() => qc.invalidateQueries(), 4000);
-      setTimeout(() => clearInterval(t), 90000);
+      void qc.invalidateQueries({ queryKey: ["my-payments"] });
     } catch (e) {
       toast.error(errMsg(e));
+      onFailed();
     } finally {
       setPushing(false);
     }
@@ -102,6 +144,7 @@ function Activation({ phone: initial }: { phone: string }) {
     if (error) { toast.error(error.message); return; }
     toast.success("Submitted! The admin will confirm your payment shortly.");
     setCode("");
+    onStarted();
     qc.invalidateQueries({ queryKey: ["my-payments"] });
   }
 
@@ -126,6 +169,7 @@ function Activation({ phone: initial }: { phone: string }) {
         </Button>
       </div>
       <p className="mt-2 text-xs text-muted-foreground">You'll get an M-Pesa prompt on your phone. Enter your PIN and your account activates automatically.</p>
+      {waiting && <p role="status" className="mt-3 flex items-center gap-2 text-sm font-medium text-primary"><Loader2 className="h-4 w-4 animate-spin" />Waiting for M-Pesa confirmation…</p>}
       <p className="mt-5 text-sm font-semibold">Paid but your account is still inactive?</p>
       <p className="mt-1 text-sm text-muted-foreground">Enter the M-Pesa code from your payment SMS below for admin review. You don't need to pay again.</p>
       {latest && statusText[latest.status] && (

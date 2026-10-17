@@ -1,0 +1,2 @@
+- [ ] Add confirmed-payment welcome and failed-payment retry pages.
+- [ ] Connect activation outcomes and verify both pages.
