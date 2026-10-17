@@ -8,7 +8,7 @@ import { getSurveyWallUrl } from "@/lib/surveys.functions";
 import { DailyPoll } from "@/components/DailyPoll";
 
 export const Route = createFileRoute("/_authenticated/surveys")({
-  head: () => ({ meta: [{ title: "Paid surveys — Work Cash" }, { name: "description", content: "Complete live surveys and earn KSh." }] }),
+  head: () => ({ meta: [{ title: "Paid surveys — Work Cash" }, { name: "description", content: "Complete live surveys and earn KSh." }, { property: "og:title", content: "Paid surveys — Work Cash" }, { property: "og:description", content: "Earn with Work Cash surveys and daily poll bonuses." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: Surveys,
 });
 

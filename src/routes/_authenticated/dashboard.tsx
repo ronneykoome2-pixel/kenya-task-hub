@@ -12,10 +12,8 @@ import { useProfile, ksh, errMsg } from "@/lib/account";
 import { useServerFn } from "@tanstack/react-start";
 import { startActivationPush } from "@/lib/mpesa.functions";
 
-export const TILL_NUMBER = "6412161";
-
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  head: () => ({ meta: [{ title: "My wallet — Work Cash" }, { name: "description", content: "Your Work Cash wallets and earnings." }] }),
+  head: () => ({ meta: [{ title: "My wallet — Work Cash" }, { name: "description", content: "Your Work Cash wallets and earnings." }, { property: "og:title", content: "My wallet — Work Cash" }, { property: "og:description", content: "Manage your Work Cash activation, wallets and earnings." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: Dashboard,
 });
 
@@ -24,7 +22,10 @@ function Dashboard() {
   const { data: refs } = useQuery({
     queryKey: ["refcount", p?.id],
     enabled: !!p,
-    queryFn: async () => (await supabase.rpc("referral_count", { _user: p!.id })).data ?? 0,
+    queryFn: async () => {
+      if (!p) return 0;
+      return (await supabase.rpc("referral_count", { _user: p.id })).data ?? 0;
+    },
   });
   if (isLoading || !p) return <Loader2 className="mx-auto mt-20 h-8 w-8 animate-spin text-primary" />;
   return (
@@ -121,24 +122,19 @@ function Activation({ phone: initial }: { phone: string }) {
       <div className="mt-5 grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
         <div><Label>M-Pesa phone number</Label><Input className="mt-1.5 h-11" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="0712345678" /></div>
         <Button className="h-11 bg-gold text-gold-foreground hover:bg-gold/90" disabled={pushing} onClick={push}>
-          {pushing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Activate now — pay KSh 100
+      {pushing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Click here to activate now
         </Button>
       </div>
       <p className="mt-2 text-xs text-muted-foreground">You'll get an M-Pesa prompt on your phone. Enter your PIN and your account activates automatically.</p>
-      <p className="mt-5 text-sm font-semibold">Or pay manually:</p>
-      <ol className="mt-2 space-y-1.5 rounded-2xl bg-muted p-4 text-sm">
-        <li>1. Open M-Pesa → <b>Lipa na M-Pesa</b> → <b>Buy Goods and Services</b></li>
-        <li>2. Till number: <b className="font-display text-lg tracking-wider text-primary">{TILL_NUMBER}</b></li>
-        <li>3. Amount: <b>KSh 100</b>, enter your PIN</li>
-        <li>4. Paste the M-Pesa code from the SMS below</li>
-      </ol>
+      <p className="mt-5 text-sm font-semibold">Paid but your account is still inactive?</p>
+      <p className="mt-1 text-sm text-muted-foreground">Enter the M-Pesa code from your payment SMS below for admin review. You don't need to pay again.</p>
       {latest && statusText[latest.status] && (
         <div className="mt-4 rounded-xl bg-accent px-4 py-3 text-sm font-medium">{statusText[latest.status]}</div>
       )}
       <div className="mt-5 grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
-        <div><Label>Phone you paid from</Label><Input className="mt-1.5 h-11" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="0712345678" /></div>
-        <div><Label>M-Pesa code</Label><Input className="mt-1.5 h-11 uppercase" value={code} onChange={(e) => setCode(e.target.value)} placeholder="SJK3XXXXXX" /></div>
-        <Button className="h-11" onClick={submit} disabled={latest?.status === "paid"}>Submit code</Button>
+        <div><Label htmlFor="payment-phone">Phone you paid from</Label><Input id="payment-phone" className="mt-1.5 h-11" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="0712345678" /></div>
+        <div><Label htmlFor="payment-code">M-Pesa code</Label><Input id="payment-code" className="mt-1.5 h-11 uppercase" value={code} onChange={(e) => setCode(e.target.value)} placeholder="SJK3XXXXXX" /></div>
+        <Button className="h-11" onClick={submit} disabled={latest?.status === "paid" || !code.trim()}>Submit code</Button>
       </div>
     </div>
   );
