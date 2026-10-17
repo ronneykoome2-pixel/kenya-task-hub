@@ -10,7 +10,7 @@ import { useProfile, ksh } from "@/lib/account";
 import { LockedNotice } from "@/components/LockedNotice";
 
 export const Route = createFileRoute("/_authenticated/videos")({
-  head: () => ({ meta: [{ title: "Watch & earn — Work Cash" }, { name: "description", content: "Watch ad videos and earn KSh." }] }),
+  head: () => ({ meta: [{ title: "Watch & earn — Work Cash" }, { name: "description", content: "Watch ad videos and earn KSh." }, { property: "og:title", content: "Watch & earn — Work Cash" }, { property: "og:description", content: "Earn Kenyan shillings from Work Cash ad videos." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: Videos,
 });
 

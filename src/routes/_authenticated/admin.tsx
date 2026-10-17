@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useProfile, ksh } from "@/lib/account";
 
 export const Route = createFileRoute("/_authenticated/admin")({
-  head: () => ({ meta: [{ title: "Admin — Work Cash" }, { name: "description", content: "Work Cash admin panel." }] }),
+  head: () => ({ meta: [{ title: "Admin — Work Cash" }, { name: "description", content: "Work Cash admin panel." }, { property: "og:title", content: "Admin — Work Cash" }, { property: "og:description", content: "Review Work Cash payments, withdrawals and tasks." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: Admin,
 });
 
